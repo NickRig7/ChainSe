@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Article Management Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #f4f6f8;
+      padding: 2rem 2.5rem 1.4rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.8rem;
+      letter-spacing: 0.3px;
+      color: #1e1e1e;
+    }
+
+    .search-box {
+      position: relative;
+      transition: width 0.3s ease;
+    }
+
+    .search-box input {
+      padding: 10px 16px 10px 40px;
+      font-size: 0.95rem;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      width: 200px;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+
+    .search-box input:hover {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+    }
+
+    .search-box input:focus {
+      width: 300px;
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      pointer-events: none;
+    }
+
+    .search-box input:focus + i {
+      color: #007bff;
+    }
+
+    .table-container {
+      padding: 2.5rem;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.5rem;
+      table-layout: fixed;
+    }
+
+    thead {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    thead tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    th {
+      padding: 7px 18px;
+      font-size: 0.95rem;
+      text-align: left;
+      color: white;
+    }
+
+    th:nth-child(1), td:nth-child(1) { width: 50%; }
+    th:nth-child(2), td:nth-child(2) { width: 14%; }
+    th:nth-child(3), td:nth-child(3) { width: 12%; }
+    th:nth-child(4), td:nth-child(4) { width: 18%; }
+    th:nth-child(5), td:nth-child(5) { width: 23%; }
+
+    tbody {
+      display: block;
+      width: 100%;
+    }
+
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      margin-top: 0.8rem;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    td {
+      padding: 1rem 1.2rem;
+      font-size: 0.92rem;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: #f4faff;
+      transform: scale(1.01);
+    }
+
+    .edit-button {
+      padding: 7px 16px;
+      background-color: #0066ff;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .edit-button:hover {
+      background-color: #004ac1;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #333;
+      background-color: #e4ecf7;
+      border-radius: 12px;
+    }
+
+    td:nth-child(2) .tag {
+      background-color: #d7f0db;
+      color: #0f5132;
+    }
+
+    td:nth-child(4) {
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .search-box input {
+        width: 100%;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      td {
+        display: block;
+        padding: 0.8rem 1rem;
+        position: relative;
+        padding-left: 50%;
+        border: none;
+      }
+
+      td::before {
+        position: absolute;
+        top: 0.8rem;
+        left: 1rem;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        color: #666;
+      }
+
+      td:nth-of-type(1)::before { content: "Title"; }
+      td:nth-of-type(2)::before { content: "Category"; }
+      td:nth-of-type(3)::before { content: "Status"; }
+      td:nth-of-type(4)::before { content: "Published Date"; }
+      td:nth-of-type(5)::before { content: "Actions"; }
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Articles Management</h1>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search articles..." />
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table id="articleTable">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Published Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+        <tr>
+          <td>{{ article.title }}</td>
+          <td><span class="tag">{{ article.category }}</span></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" class="publish-toggle" data-id="{{ article.id }}" {% if article.is_published %}checked{% endif %}>
+              <span class="slider round"></span>
+            </label>
+          </td>
+          <td>{{ article.published }}</td>
+          <td>
+            <a class="edit-button" href="{{ url_for('edit_article', article_id=article.id) }}">Edit</a>
+            <form method="POST" action="{{ url_for('delete_article', article_id=article.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete?');">
+              <button type="submit" style="background: none; border: none; cursor: pointer; margin-left: 8px;" title="Delete Article">
+                <i class="fas fa-trash-alt" style="color: #e74c3c; font-size: 1rem;"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchInput = document.getElementById('searchInput');
+      const searchIcon = document.querySelector('.search-box i');
+      const table = document.getElementById('articleTable');
+      const rows = table.getElementsByTagName('tr');
+
+      searchInput.addEventListener('keyup', function () {
+        const filter = this.value.toLowerCase();
+        for (let i = 1; i < rows.length; i++) {
+          const rowText = rows[i].textContent.toLowerCase();
+          rows[i].style.display = rowText.includes(filter) ? '' : 'none';
+        }
+      });
+
+      searchInput.addEventListener('focus', () => {
+        searchIcon.style.color = '#007bff';
+      });
+
+      searchInput.addEventListener('blur', () => {
+        searchIcon.style.color = '#666';
+      });
+
+      document.querySelectorAll('.publish-toggle').forEach(toggle => {
+        toggle.addEventListener('change', async function () {
+          const articleId = this.getAttribute('data-id');
+          const isPublished = this.checked;
+
+          const response = await fetch(`/toggle-publish/${articleId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ published: isPublished })
+          });
+
+          const result = await response.json();
+          if (!result.success) {
+            alert('Failed to update publish status.');
+            this.checked = !isPublished;
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

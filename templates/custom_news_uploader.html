@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Custom News</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .upload-container {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(175, 189, 189, 0.2);
+      width: 450px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    form input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
+
+    form input::placeholder {
+      color: #aaaaaa;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #00bcd4;
+      color: #121212;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1de9b6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="upload-container">
+    <h2>Upload Custom News</h2>
+<form id="newsForm" enctype="multipart/form-data">
+  <input type="text" name="title" placeholder="Title" required>
+  <input type="text" name="link" placeholder="Link" required>
+  <input type="text" name="published" placeholder="Published Date">
+  <input type="text" name="summary" placeholder="Short Summary">
+  <input type="text" name="image_url" placeholder="Image URL (optional)" style="margin-bottom: 2px;">
+  <div style="text-align: center; color: #888; margin: 2px 0; font-size: 0.85rem;">or Upload an image</div>
+  <input type="file" name="image" accept="image/*" style="margin-top: 2px;">
+
+  <!-- New Category Dropdown -->
+  <label for="category" style="color: #ccc; margin-top: 1rem; display: block; font-size: 0.9rem;">Select Category</label>
+  <select name="category" required style="
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 12px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
+    border: none;
+  ">
+    <option value="edu">Edu Bites</option>
+    <option value="btca">BTC Action</option>
+    <option value="for-you">For You</option>
+  </select>
+
+  <button type="submit">Submit</button>
+</form>
+  </div>
+
+  <script>
+    document.getElementById('newsForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const response = await fetch('/upload-news', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      alert(result.success ? "News uploaded!" : `Upload failed: ${result.error || "Unknown error"}`);
+      if (result.success) form.reset();
+    });
+  </script>
+
+</body>
+</html>
