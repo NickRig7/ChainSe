@@ -36,7 +36,8 @@
 
     .info-box {
       display: none;
-      width: 370px;
+      width: 90vw;
+        max-width: 400px;
       background-image: url('/static/xyz.png');
       background-size: cover;
       background-repeat: no-repeat;
@@ -123,8 +124,9 @@
     .card-stack {
       display: none;
       position: relative;
-      width: 400px;
-      height: 550px;
+      width: 90vw;
+      max-width: 400px;
+      height: 75vh;
       z-index: 1;
       box-shadow: 0 0 50px rgba(175, 189, 189, 0.2);
       transition: box-shadow 0.4s ease;
@@ -306,6 +308,24 @@
   text-align: center;
 }
 
+@media (max-width: 480px) {
+  .title {
+    font-size: 1rem;
+  }
+
+  .summary {
+    font-size: 0.95rem;
+  }
+
+  .read-more a {
+    font-size: 0.85rem;
+  }
+
+  .category-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+  }
+}
   </style>
 </head>
 
