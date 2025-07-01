@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    form {
+      background-color: #1f1f1f;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,255,231,0.1);
+    }
+    input, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background-color: #00ffe7;
+      color: #000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <form method="POST">
+    <h2>Admin Login</h2>
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+</body>
+</html>

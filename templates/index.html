@@ -2,40 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Swipe News Cards</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <!--seo-->
+  <title>Latest Crypto News & Updates - ChainShots</title>
+  <meta name="description" content="Stay updated with breaking crypto news, Bitcoin price action, educational crypto bites, and more. Swipe through top crypto articles on ChainShots.">
 
-  <!-- Manifest and theme color -->
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:title" content="Latest Crypto News & Updates - ChainShots">
+  <meta property="og:description" content="Stay updated with breaking crypto news, Bitcoin price action, educational crypto bites, and more. Swipe through top crypto articles on ChainShots.">
+  <meta property="og:image" content="https://yourdomain.com/static/og-image.png">
+  <meta property="og:url" content="https://yourdomain.com/">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Latest Crypto News & Updates - ChainShots">
+  <meta name="twitter:description" content="Swipe through trending crypto news on ChainShots. Stay updated on Bitcoin, altcoins, and blockchain updates.">
+  <meta name="twitter:image" content="https://yourdomain.com/static/og-image.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+
   <link rel="manifest" href="/static/manifest.json" />
   <meta name="theme-color" content="#00bcd4" />
-
-  <!-- iOS PWA support (optional but good) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="apple-touch-icon" href="/static/icons/cso.jpg" />
 
+  <!-- JSON-LD Structured Data -->
+  {% if latest_articles %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {% for article in latest_articles %}
+      {
+        "@type": "NewsArticle",
+        "headline": "{{ article.title|e }}",
+        "image": "{{ article.image_url|e }}",
+        "datePublished": "{{ article.published|e }}",
+        "author": {
+          "@type": "Organization",
+          "name": "ChainShots"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "ChainShots",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://yourdomain.com/static/logo.png"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://yourdomain.com/"
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #121212;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
+    * {
+      box-sizing: border-box;
     }
 
-    .main-container {
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      min-height: 100vh;
+      /*height: 100%;*/
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
+      overflow: hidden; /* 🚫 block all scrolling */
       position: relative;
     }
 
+    .main-container {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*height: 100vh;  🆕 ensures full screen behavior */
+  height: calc(var(--vh, 1vh) * 100); /* ✅ dynamic height fallback */
+  overflow: hidden;
+}
+
     .info-box {
-      display: none;
-      width: 370px;
+      width: 100%;
+      
       background-image: url('/static/xyz.png');
       background-size: cover;
       background-repeat: no-repeat;
@@ -43,13 +106,7 @@
       background-color: rgba(0, 0, 0, 0.5);
       background-blend-mode: darken;
       color: #ffffff;
-      padding: 0.6rem 1rem 0.4rem;
-      border-radius: 20px 20px 0 0;
-      text-align: center;
-      z-index: 3;
-      position: relative;
-      margin-bottom: -20px;
-      overflow: hidden;
+      border-radius: 0 0 0 0;
       box-shadow: 0 0 20px rgba(175, 189, 189, 0.2);
     }
 
@@ -57,37 +114,46 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-      position: relative;
-    }
-
-    .info-title {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 40px;
-      letter-spacing: 1px;
-      color: #d6c5c5;
+      /*padding: 0.75rem 1rem 0.5rem;*/
+      padding: 1.25rem 1rem 1rem; /* ⬆ increased top and bottom padding */
     }
 
     .info-logo-inline {
-      height: 52px;
+      height: 46px;
       width: auto;
+    }
+
+    .info-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #d6c5c5;
+    }
+
+    .hamburger-menu {
+      font-size: 16px;
+      cursor: pointer;
+      color: #000;
+      padding: 4px 10px;
+      background-color: #a38b6c;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      transition: background 0.3s;
+      margin-right: 10px; /* ⬅️ Add this line */
+    }
+
+    .hamburger-menu:hover {
+      background-color: #e0e0e0;
     }
 
     .category-scroll {
       display: flex;
       overflow-x: auto;
-      padding: 0.5rem 0.5rem;
+      padding: 0.5rem 1rem 0.8rem;
       gap: 0.5rem;
-      max-width: 400px;
-      margin: 0 auto 0;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      border-radius: 20px;
+      /*padding: 0.5rem 1rem 1rem; /* ⬆ increase bottom padding */
     }
 
     .category-scroll::-webkit-scrollbar {
@@ -98,18 +164,17 @@
       flex: 0 0 auto;
       background-color: #1e1e1e;
       border: none;
-      padding: 0.4rem 0.8rem;
+      padding: 0.4rem 0.9rem;
       color: #ffffff;
       border-radius: 20px;
       font-size: 0.85rem;
       cursor: pointer;
       transition: background 0.3s, box-shadow 0.3s;
-      box-shadow: 0 0 12px rgba(175, 189, 189, 0.1);
+      box-shadow: 0 0 10px rgba(175, 189, 189, 0.1);
     }
 
     .category-btn:hover {
       background-color: #171616;
-      box-shadow: 0 0 15px rgba(250, 251, 251, 0.371);
     }
 
     .category-btn.active {
@@ -120,15 +185,16 @@
     }
 
     .card-stack {
-      display: none;
-      position: relative;
-      width: 400px;
-      height: 550px;
-      z-index: 1;
-      box-shadow: 0 0 50px rgba(175, 189, 189, 0.2);
-      transition: box-shadow 0.4s ease;
-      border-radius: 20px;
-    }
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    flex-grow: 1; /* ✅ fill remaining vertical space */
+    border-radius: 10px 10px 20px 20px;
+    box-shadow: 0 0 20px rgba(175, 189, 189, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
     .card {
       position: absolute;
@@ -137,7 +203,7 @@
       width: 100%;
       height: 100%;
       background: #1e1e1e;
-      border-radius: 20px;
+      border-radius: 0 0 20px 20px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -146,10 +212,14 @@
     }
 
     .card:hover {
-      box-shadow: 0 0 20px 4px rgba(0, 255, 255, 0.6), 0 0 30px 10px rgba(0, 255, 255, 0.2);
-      transform: scale(1.006);
+      transform: scale(1.015);
+      box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.7),
+        0 0 40px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(0, 255, 255, 0.2);
+      z-index: 2;
     }
-
+    
     .card img {
       width: 100%;
       height: 220px;
@@ -166,19 +236,25 @@
     .title {
       font-size: 1.2rem;
       font-weight: bold;
-      margin-bottom: 0.8rem;
-      color: #ffffff;
+      margin-bottom: 1rem;
+      color: #dfe89d;
+      text-align: justify;
+      hyphens: auto;
+      word-break: break-word;
     }
 
     .summary {
-      font-size: 1.05rem;
+      font-size: 1.09rem;
       color: #cccccc;
-      line-height: 1.4;
+      line-height: 1.5;
       flex-grow: 1;
+      text-align: justify;
+      hyphens: auto;
+      word-break: break-word;
     }
 
     .read-more {
-      margin-top: 1rem;
+      margin-top: 2rem;
       text-align: right;
     }
 
@@ -186,133 +262,261 @@
       text-decoration: none;
       color: #00bcd4;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 1rem;
       transition: color 0.3s ease;
     }
 
     .read-more a:hover {
       color: #1de9b6;
-      text-decoration: underline;
+      /*text-decoration: underline;*/
     }
 
-    .hamburger-menu {
-      margin-left: auto;
-      margin-right: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      color: #000;
-      padding: 4px 10px;
-      background-color: #a38b6c;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-      transition: background 0.3s;
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -75%;
+      width: 75vw;
+      max-width: 320px;
+      /*height: 100vh;  ensure full screen, not more */
+      height: calc(var(--vh, 1vh) * 100); /* fallback height */
+      background-color: rgba(30, 30, 30, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+      transition: right 0.3s ease, opacity 0.3s ease;
+      border-radius: 20px;
+      padding: 1rem 1rem 0.75rem; /* ⬅️ adjusted bottom padding */
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .hamburger-menu:hover {
-      background-color: #e0e0e0;
+    @media (min-width: 768px) {
+    .main-container {
+      position: relative;
     }
 
-    /* SIDE MENU */
-  .side-menu {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: -78%;
-    width: 70%;
-    height: 611.2px;
-    background-color: rgba(30, 30, 30, 0.7); /* Transparent background */
-    backdrop-filter: blur(8px); /* Optional glassmorphism effect */
-    z-index: 5;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
-    transition: right 0.3s ease, opacity 0.3s ease;
-    border-radius: 20px 20px 20px 20px;
-    padding: 1rem;
-    overflow-y: auto;
-    color: #fff;
-    opacity: 0;
-    pointer-events: none;
-    display: flex;
-  flex-direction: column;
+    .side-menu {
+      position: absolute;
+      top: 0;
+      right: -100%;
+      width: 75%;
+      max-width: 320px;
+      height: 100%;
+      border-radius: 20px;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
   }
 
-.side-menu.open {
-  right: 0;
-  opacity: 1;
-  pointer-events: auto;
-}
+    /* Responsive fix for very small screens */
+    @media (max-height: 600px) {
+      .side-menu-img {
+        max-height: 140px;
+      }
 
-.side-menu-img {
-  width: 100%;
-  height: 30%;
-  object-fit: cover;
-  border-radius: 20px 20px 0 0;
-  filter: brightness(0.6) saturate(2); /* Darkens the image */
-  /*filter: brightness(0.7) sepia(10) hue-rotate(180deg) /*saturate(2);*/
-}
+      .side-menu {
+        padding: 0.75rem;
+      }
 
-  /*socials*/
+      .side-menu-footer {
+        padding-top: 4rem;
+      }
+    }
 
-.social-links {
-  margin-top: 2rem;
+    .side-menu.open {
+      right: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Adjust image to never overflow vertically */
+    .side-menu-img {
+      width: 100%;
+      max-height: 180px; /* prevents from taking too much height */
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+      filter: brightness(0.6) saturate(1.5);
+      margin-bottom: 1rem;
+    }
+
+
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* keeps separators centered */
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1rem;
+      color: #ffffff;
+      padding: 0.3rem 0;
+      justify-content: flex-start;
+      width: 80%;
+      max-width: 250px;
+      margin-left: 4rem; /* ✅ shift icon+text to the right only */
+    }
+
+    .social-link a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .social-link a:hover {
+      color: #00bcd4;
+    }
+
+    .social-icon {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .social-separator {
+      border: none;
+      height: 1px;
+      background-color: rgba(150, 150, 150, 0.25);
+      margin: 0.4rem 0;
+      width: 55%; /* ✅ keep this centered */
+      align-self: center;
+    }
+
+    .side-menu-footer {
+      margin-top: auto;
+      padding-top: 10rem;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+
+    .card.swiping {
+      box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.7),
+        0 0 40px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(0, 255, 255, 0.2);
+      z-index: 2;
+    }
+        
+    @media (hover: hover) and (pointer: fine) {
+      .card:hover {
+        transform: scale(1.015);
+        box-shadow:
+          0 0 25px rgba(0, 255, 255, 0.7),
+          0 0 40px rgba(0, 255, 255, 0.4),
+          0 0 60px rgba(0, 255, 255, 0.2);
+        z-index: 2;
+      }
+    }
+
+    .card-footer {
   display: flex;
-  flex-direction: column;
-  gap: 0.6rem; /* reduced from 1.5rem */
-  left: 20%;
-}
-
-
-.social-link {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1rem;
-  color: #ffffff;
-  padding-left: 2rem; /* ⬅️ Add this line */
+  margin-top: 1rem;
 }
 
-.social-link a {
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.social-link a:hover {
-  color: #00bcd4;
-  /*text-decoration: underline; */
-}
-
-.social-icon {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-.social-separator {
+.share-btn {
+  position: absolute;
+  left: 22px;
+  bottom: 16px;
+  background: none;
   border: none;
-  height: 1px;
-  background-color: rgba(150, 150, 150, 0.25); /* subtle darker line */
-  margin: 0.1rem 0; /* very tight spacing */
-  width: 55%;
-  align-self: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 5;
 }
 
-.side-menu-footer {
-  margin-top: 168px; /* Push to bottom auto*/
-  padding-top: 1rem;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4); /* Subtle light gray */
-  text-align: center;
+.share-btn img {
+  width: 26px;
+  height: 26px;
+  /*filter: invert(1);*/
+  transition: transform 0.2s ease;
 }
+
+.share-btn:hover img {
+  transform: scale(1.2);
+}
+
+.card {
+  z-index: 1;
+}
+
+.card:last-child {
+  z-index: 2;
+}
+
+.swipe-hint {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  color: #00bcd4;
+  opacity: 0.75;
+  animation: pulseHint 2s infinite;
+  letter-spacing: 0.5px;
+}
+
+@keyframes pulseHint {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+/*seo */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+#intro-text {
+  color: #00bcd4;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  opacity: 0.85;
+  animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 0.85; transform: translateY(0); }
+} /*seo */
 
   </style>
 </head>
+<!-- HEAD and STYLE remain same from previous step -->
 
 <body>
   <div class="main-container">
     <div class="info-box">
       <div class="info-header">
         <img src="/static/logo.png" alt="Logo" class="info-logo-inline" />
+        <h1 class="visually-hidden">ChainShots - Latest Crypto News & Insights</h1>
         <span class="info-title">ChainShots</span>
         <div class="hamburger-menu">&#9776;</div>
       </div>
@@ -320,243 +524,55 @@
         <button class="category-btn active" data-category="daily-news">Daily News</button>
         <button class="category-btn" data-category="edu">Edu Bites</button>
         <button class="category-btn" data-category="btca">BTC Action</button>
-        <!--<button class="category-btn" data-category="crypto">Crypto</button>
-        <button class="category-btn" data-category="blockchain">Blockchain</button>-->
         <button class="category-btn" data-category="for-you">For You</button>
-      </div>
-    </div>
-
-    <div class="card-stack" id="news-container"></div>
-
-  <!-- Developer Signature (temporary) -->
-  <div id="dev-signature" style="
-    margin-top: 12px;
-    font-size: 0.75rem;
-    color: rgba(33, 33, 33, 0.2);
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    user-select: none;
-    transition: opacity 0.5s ease;
-    position: fixed;
-  ">
-    Developed by Bikash
-  </div>
-
-    <div class="side-menu" id="sideMenu">
-      <img src="/static/abc.png" alt="Side Menu Banner" class="side-menu-img" />
-      <div class="social-links">
-        <div class="social-link">
-          <img src="/static/twwit.png" alt="Twitter" class="social-icon" />
-          <a href="https://twitter.com/yourhandle" target="_blank">Twitter</a>
-        </div>
-        <hr class="social-separator" />
-        <div class="social-link">
-          <img src="/static/web.png" alt="Telegram" class="social-icon" />
-          <a href="https://t.me/yourhandle" target="_blank">Website</a>
-        </div>
-        <hr class="social-separator" />
-        <div class="social-link">
-          <img src="/static/link2.png" alt="LinkedIn" class="social-icon" />
-          <a href="https://github.com/yourprofile" target="_blank">LinkedIn</a>
-        </div>
-        <hr class="social-separator" />
-        <div class="social-link">
-          <img src="/static/youp.png" alt="GitHub" class="social-icon" />
-          <a href="https://github.com/yourprofile" target="_blank">YouTube</a>
-        </div>
-      </div>
-      <div class="side-menu-footer">
-        © 2025 ChainShots v1.0
       </div>
     </div>
 
     
 
+    <div class="card-stack" id="news-container">
+
+      <!-- Intro Text Card (Temporary) SEO -->
+      <div id="intro-text">
+        👋 Welcome to ChainShots!<br>Swipe right or left to explore the latest crypto news.
+      </div>
+
+
+    </div>
+
+    <div class="side-menu" id="sideMenu">
+      <img src="/static/abc.png" alt="Side Menu Banner" class="side-menu-img" />
+      <div class="social-links">
+      <div class="social-link">
+        <img src="/static/twwit.png" alt="Twitter" class="social-icon" />
+        <a href="https://twitter.com/yourhandle" target="_blank">Twitter</a>
+      </div>
+      <hr class="social-separator" />
+      <div class="social-link">
+        <img src="/static/web.png" alt="Telegram" class="social-icon" />
+        <a href="https://t.me/yourhandle" target="_blank">Telegram</a>
+      </div>
+      <hr class="social-separator" />
+      <div class="social-link">
+        <img src="/static/link2.png" alt="GitHub" class="social-icon" />
+        <a href="https://github.com/yourprofile" target="_blank">GitHub</a>
+      </div>
+      <hr class="social-separator" />
+      <div class="social-link">
+        <img src="/static/youp.png" alt="YouTube" class="social-icon" />
+        <a href="https://youtube.com/yourchannel" target="_blank">YouTube</a>
+      </div>
+    </div>
+      <div class="side-menu-footer">
+        © 2025 ChainShots v1.0
+      </div>
+    </div>
+
+
   </div>
 
-<script>
-let currentCategory = 'daily-news';
-
-async function loadNews(category = 'daily-news') {
-  currentCategory = category;
-  const container = document.getElementById('news-container');
-  container.innerHTML = '';
-
-  // Always fetch fresh data from server
-  const res = await fetch(`/news?category=${category}`);
-  let articles = await res.json();
-
-  // Remove previously swiped articles
-  const removed = JSON.parse(sessionStorage.getItem(`removed-${category}`)) || [];
-  articles = articles.filter(article => !removed.includes(article.link));
-
-  // Cache filtered articles
-  sessionStorage.setItem(`news-${category}`, JSON.stringify(articles));
-  renderArticles(articles);
-
-  document.querySelector('.info-box').style.display = 'block';
-  document.querySelector('.card-stack').style.display = 'block';
-  document.getElementById('sideMenu').style.display = 'block';
-}
-
-function renderArticles(articles) {
-  const container = document.getElementById('news-container');
-  container.innerHTML = '';
-
-  if (!articles.length) {
-    container.innerHTML = '<div class="title" style="padding: 1rem; color: #ccc;">No more news in this category.</div>';
-    return;
-  }
-
-  articles.forEach(article => { 
-    const card = document.createElement('div'); 
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${article.image_url || 'https://via.placeholder.com/400x180'}" alt="" />
-      <div class="card-content">
-        <div class="title">${article.title}</div>
-        <div class="summary">${article.summary}</div>
-        <div class="read-more">
-          <a href="${article.link}" target="_blank">Read more</a>
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-
-    // Hide the signature once articles are rendered
-  const sig = document.getElementById('dev-signature');
-  if (sig) {
-    sig.style.opacity = '0';
-    setTimeout(() => sig.remove(), 600);
-  }
-
-
-  initSwipe();
-}
-
-function initSwipe() {
-  const cards = document.querySelectorAll('.card');
-  let topCard = cards[cards.length - 1];
-  if (!topCard) return;
-
-  topCard.addEventListener('mousedown', startDrag);
-  topCard.addEventListener('touchstart', startDrag);
-
-  let isDragging = false;
-  let startX, currentX;
-
-  function startDrag(e) {
-    isDragging = true;
-    startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchmove', onDrag);
-    document.addEventListener('touchend', endDrag);
-  }
-
-  function onDrag(e) {
-    if (!isDragging) return;
-    currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    const deltaX = currentX - startX;
-    topCard.style.transform = `translateX(${deltaX}px) rotate(${deltaX / 10}deg)`;
-  }
-
-  function endDrag() {
-    isDragging = false;
-    const deltaX = currentX - startX;
-    const threshold = 150;
-
-    if (Math.abs(deltaX) > threshold) {
-      topCard.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-      topCard.style.transform = `translateX(${deltaX > 0 ? 1000 : -1000}px) rotate(${deltaX > 0 ? 20 : -20}deg)`;
-      topCard.style.opacity = '0';
-
-      setTimeout(() => {
-        const link = topCard.querySelector('.read-more a').href;
-        topCard.remove();
-
-        // ✅ Track removed articles
-        const removedKey = `removed-${currentCategory}`;
-        let removed = JSON.parse(sessionStorage.getItem(removedKey)) || [];
-        removed.push(link);
-        sessionStorage.setItem(removedKey, JSON.stringify(removed));
-
-        // ✅ Update cached list
-        const cached = JSON.parse(sessionStorage.getItem(`news-${currentCategory}`)) || [];
-        const updated = cached.filter(article => article.link !== link);
-        sessionStorage.setItem(`news-${currentCategory}`, JSON.stringify(updated));
-
-        const newCards = document.querySelectorAll('.card');
-        topCard = newCards[newCards.length - 1];
-
-        if (topCard) {
-          topCard.addEventListener('mousedown', startDrag);
-          topCard.addEventListener('touchstart', startDrag);
-        } else {
-          // 🔁 Auto-loop logic
-          setTimeout(() => {
-            sessionStorage.removeItem(`removed-${currentCategory}`);
-            loadNews(currentCategory);
-          }, 300);
-        }
-      }, 400);
-    } else {
-      topCard.style.transition = 'transform 0.3s ease';
-      topCard.style.transform = 'translateX(0px) rotate(0deg)';
-    }
-
-    document.removeEventListener('mousemove', onDrag);
-    document.removeEventListener('mouseup', endDrag);
-    document.removeEventListener('touchmove', onDrag);
-    document.removeEventListener('touchend', endDrag);
-  }
-}
-
-
-document.querySelectorAll('.category-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const selectedCategory = btn.getAttribute('data-category');
-    loadNews(selectedCategory);
-  });
-});
-
-const hamburger = document.querySelector('.hamburger-menu');
-const sideMenu = document.getElementById('sideMenu');
-
-hamburger.addEventListener('click', () => {
-  sideMenu.classList.toggle('open');
-});
-
-document.addEventListener('click', (e) => {
-  const isClickInsideMenu = sideMenu.contains(e.target);
-  const isClickOnHamburger = hamburger.contains(e.target);
-  if (!isClickInsideMenu && !isClickOnHamburger && sideMenu.classList.contains('open')) {
-    sideMenu.classList.remove('open');
-  }
-});
-
-// Clear session cache if page is reloaded
-const navType = performance.getEntriesByType("navigation")[0]?.type || performance.navigation.type;
-if (navType === "reload") {
-  Object.keys(sessionStorage)
-    .filter(key => key.startsWith('news-'))
-    .forEach(key => sessionStorage.removeItem(key));
-}
-
-loadNews();
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/static/service-worker.js')
-        .then(reg => console.log('Service Worker registered:', reg.scope))
-        .catch(err => console.error('Service Worker registration failed:', err));
-    });
-  }
-</script>
+<script src="/static/js/main.js"></script>
 
 </body>
 </html>
+
