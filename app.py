@@ -94,8 +94,6 @@ def fetch_news_by_category(category):
         "image_url": a.image_url
     } for a in articles]
 
-
-
 @app.route('/')
 def index():
     if not session.get('has_seen_welcome'):

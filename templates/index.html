@@ -231,11 +231,20 @@
       object-fit: cover;
     }
 
-    .card-content {
+    /*.card-content {
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+    }*/
+
+    .card-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* ✅ ensures space between title/summary and read-more */
+      flex-grow: 1;
+      height: 100%; /* ✅ fills vertical space in card */
     }
 
     .title {
@@ -261,7 +270,8 @@
     }
 
     .read-more {
-      margin-top: 2rem;
+      flex-shrink: 0; /* ✅ prevents getting squashed */
+      margin-top: 2rem; /*2rem */
       text-align: right;
     }
 
@@ -500,7 +510,7 @@
 }
 
 #intro-text {
-  color: #00bcd4;
+  color: #121212;
   padding: 1.5rem 1rem;
   text-align: center;
   font-family: 'Montserrat', sans-serif;
@@ -541,7 +551,7 @@
 
       <!-- Intro Text Card (Temporary) SEO -->
       <div id="intro-text">
-        👋 Welcome to ChainShots!<br>Swipe right or left to explore the latest crypto news.
+        Welcome to ChainShots!<br>Swipe right or left to explore the latest crypto news.
       </div>
 
 
