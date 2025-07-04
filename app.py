@@ -31,7 +31,7 @@ with app.app_context():
 CATEGORY_FEEDS = {
     "daily-news": [
         "https://www.coindesk.com/arc/outboundfeeds/rss",
-        "https://cointelegraph.com/rss/tag/blockchain",
+        "https://cointelegraph.com/rss/tag/blockchain", 
     ],
     "edu": ["https://cointelegraph.com/rss/category/analysis"],
     "btca": ["https://cointelegraph.com/rss/tag/bitcoin"],
