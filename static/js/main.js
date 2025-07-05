@@ -36,8 +36,16 @@ function renderArticles(articles) {
     const card = document.createElement('div');
     card.className = 'card';
 
-    const swipeHintHTML = (index === articles.length - 1)
+    /*const swipeHintHTML = (index === articles.length - 1) //swipe hint on last card even appears if the category is changed
+      ? `<div class="swipe-hint">⇽ Swipe to explore ⇾</div>` : ''; */
+
+    let swipeShown = sessionStorage.getItem(`swipe-shown-${currentCategory}`);
+    const swipeHintHTML = (index === articles.length - 1 && !swipeShown)
       ? `<div class="swipe-hint">⇽ Swipe to explore ⇾</div>` : '';
+
+    if (!swipeShown) {
+      sessionStorage.setItem(`swipe-shown-${currentCategory}`, 'true');
+    }
 
     card.innerHTML = `
       <img src="${article.image_url || 'https://via.placeholder.com/400x200'}" alt="${article.title}" />
@@ -49,6 +57,7 @@ function renderArticles(articles) {
           <a href="${article.link}" target="_blank">Read more</a>
         </div>
       </div>
+      
       <button class="share-btn" data-link="${article.link}" data-title="${article.title}">
         <img src="/static/sharee.png" alt="Share" />
       </button>
