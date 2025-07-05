@@ -109,13 +109,13 @@ def index():
 
 @app.route('/custom')
 def custom():
-    if not session.get('admin_logged_in'):
+    if not session.get('admin_logged_in'):                              
         return redirect(url_for('admin_login'))
-    return render_template('custom_news_uploader.html')
+    return render_template('custom_news_uploader.html') 
 
-@app.route('/news')
+@app.route('/news')                         
 def news():
-    category = request.args.get('category', 'daily-news')
+    category = request.args.get('category', 'daily-news')                   
 
     if category == 'for-you':
         articles = NewsArticle.query.filter_by(
