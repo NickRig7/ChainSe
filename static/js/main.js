@@ -16,7 +16,7 @@ async function loadNews(category = 'daily-news') {
   renderArticles(articles);
 }
 
-function renderArticles(articles) {
+/*function renderArticles(articles) {
   const container = document.getElementById('news-container');
 
   // Hide intro text when cards load seo
@@ -37,7 +37,7 @@ function renderArticles(articles) {
     card.className = 'card';
 
     /*const swipeHintHTML = (index === articles.length - 1) //swipe hint on last card even appears if the category is changed
-      ? `<div class="swipe-hint">⇽ Swipe to explore ⇾</div>` : ''; */
+      ? `<div class="swipe-hint">⇽ Swipe to explore ⇾</div>` : ''; 
 
     let swipeShown = sessionStorage.getItem(`swipe-shown-${currentCategory}`);
     const swipeHintHTML = (index === articles.length - 1 && !swipeShown)
@@ -46,6 +46,55 @@ function renderArticles(articles) {
     if (!swipeShown) {
       sessionStorage.setItem(`swipe-shown-${currentCategory}`, 'true');
     }
+
+    card.innerHTML = `
+      <img src="${article.image_url || 'https://via.placeholder.com/400x200'}" alt="${article.title}" />
+      <div class="card-content">
+        <h2 class="title">${article.title}</h2>
+        <div class="summary">${article.summary}</div>
+        ${swipeHintHTML}
+        <div class="read-more">
+          <a href="${article.link}" target="_blank">Read more</a>
+        </div>
+      </div>
+      
+      <button class="share-btn" data-link="${article.link}" data-title="${article.title}">
+        <img src="/static/sharee.png" alt="Share" />
+      </button>
+    `;
+    container.appendChild(card);
+  });
+
+  initSwipe();
+}*/
+
+function renderArticles(articles) {
+  const container = document.getElementById('news-container');
+
+  // Hide intro text when cards load (SEO)
+  const introText = document.getElementById('intro-text');
+  if (introText) introText.style.display = 'none';
+
+  container.innerHTML = '';
+
+  if (!articles.length) {
+    container.innerHTML = '<div style="color:#ccc;padding:1rem;">No more news in this category.</div>';
+    return;
+  }
+
+  // ✅ Only check and set once, outside the loop
+  const swipeShown = sessionStorage.getItem(`swipe-shown-${currentCategory}`);
+  const showHint = !swipeShown;
+  if (showHint) {
+    sessionStorage.setItem(`swipe-shown-${currentCategory}`, 'true');
+  }
+
+  articles.forEach((article, index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const swipeHintHTML = (index === articles.length - 1 && showHint)
+      ? `<div class="swipe-hint">⇽ Swipe to explore ⇾</div>` : '';
 
     card.innerHTML = `
       <img src="${article.image_url || 'https://via.placeholder.com/400x200'}" alt="${article.title}" />
